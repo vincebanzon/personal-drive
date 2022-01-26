@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha"
+    "test": "mocha *.spec.js",
+    "test_instruction": "// need to run ```$ npm run start``` in another terminal"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   "homepage": "https://github.com/vincebanzon/personal-drive#readme",
   "devDependencies": {
     "chai": "^4.3.5",
+    "chai-http": "^4.3.0",
     "mocha": "^9.2.0"
   }
 }

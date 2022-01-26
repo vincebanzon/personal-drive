@@ -10,7 +10,7 @@ const requestListener = function (req, res) {
 
 const server = http.createServer(requestListener);
 server.listen(PORT, () => {
-    console.log(`Server running at port ${PORT}`)
+    console.log(`Server running at http://localhost:${PORT}`)
 });
 
 

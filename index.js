@@ -11,12 +11,12 @@ const PORT = process.env.PORT ? process.env.PORT : 8081
 
 const requestListener = function (req, res) {
 
-    function respond404(res) {
+    function respond404() {
         res.writeHead(404)
         res.end('Error: URL not found.');
     }
 
-    function respond400(res, message) {
+    function respond400(message) {
         res.writeHead(400)
         res.end(message)
     }
@@ -32,7 +32,7 @@ const requestListener = function (req, res) {
                 res.end('Hello, World!');
                 break
             default:
-                respond404(res)
+                respond404()
                 break;
         }
     } else if(paths[1] === 'files') {
@@ -40,11 +40,11 @@ const requestListener = function (req, res) {
             case 'POST':
                 // can be improved by using Promise.
                 // might error after timeout (2000ms)
-                let callback = (req, res) => {
+                let callback = () => {
                     var form = new formidable.IncomingForm()
                     form.parse(req, (err, fields, files) => {
                         if(err) {
-                            respond400(res, err)
+                            respond400(err)
                             return
                         }
                         let result = {
@@ -52,19 +52,24 @@ const requestListener = function (req, res) {
                             privateKey: ''
                         }
                         res.writeHead(200, {'Content-Type': 'application/json'})
-                        // res.write(result)
-                        // res.end(util.inspect({fields: fields, files: files}))
                         res.end(JSON.stringify(result))
                     })
                 }
-                filesLib.create('text', async () => await callback(req, res))
+                filesLib.create('text', async () => await callback())
                 break
             case 'GET':
                 if(paths[2]) {                      // check if publickey is present
-                    let publickey = paths[2]
-
-                    res.writeHead(200);
-                    res.end(publickey);
+                    let publicKey = paths[2]
+                    let callback = (err, file) => {
+                        if(err) {
+                            respond400(err)
+                        } else {
+                            console.log('respond download')
+                            res.writeHead(200);
+                            res.end(file, 'binary');
+                        }
+                    }
+                    filesLib.download(publicKey, async (err, img) => await callback(err, img))
                 } else {
                     res.writeHead(200);
                     res.end('GET');
@@ -82,11 +87,11 @@ const requestListener = function (req, res) {
                 }
                 break
             default:
-                respond404(res)
+                respond404()
                 break
         }
     } else {
-        respond404(res)
+        respond404()
     }
 }
 

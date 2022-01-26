@@ -1,7 +1,9 @@
-var process = require('process')
-var chai = require('chai')
-var chaiHttp = require('chai-http')
-var expect = chai.expect
+const process = require('process')
+const chai = require('chai')
+const chaiHttp = require('chai-http')
+const expect = chai.expect
+const should = chai.should
+const fs = require('fs')
 
 chai.use(chaiHttp)
 
@@ -79,14 +81,22 @@ describe('Test non-existing endpoint', () => {
 })
 
 describe('Test publickey and privatekey URL params', () => {
-    let file = "multipart/form-data"
+    let file = fs.readFileSync('./sample-image.jpg')
+    let fileName = 'sample-image.jpg'
     let publickey = "1"
     let privatekey = "2"
+
     it('should return publikey and privatekey', done => {
         chai.request(BASE_URL)
-        .get(`/files`)
+        .post(`/files`)
+        .attach('image', file, fileName)
+        .set('Content-Type', 'image/jpeg')
         .end((err, res) => {
-            // should return JSON with {publicKey: '', privateKey: ''}
+            expect(err).to.equal(null)
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.publicKey).to.not.equal(null)
+            expect(res.privateKey).to.not.equal(null)
             done()
         })
     })

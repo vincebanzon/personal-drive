@@ -1,8 +1,8 @@
-var process = require('process')
-var http = require('http')
-var url = require('url')
-var formidable = require('formidable')
-var util = require('util')
+const process = require('process')
+const http = require('http')
+const url = require('url')
+const formidable = require('formidable')
+const util = require('util')
 
 var filesLib = require('./files-lib');
 
@@ -41,22 +41,22 @@ const requestListener = function (req, res) {
                 // can be improved by using Promise.
                 // might error after timeout (2000ms)
                 let callback = (req, res) => {
-                    console.log("took 1 sec")
-                    // res.writeHead(200);
-                    // res.end('POST');
-
                     var form = new formidable.IncomingForm()
                     form.parse(req, (err, fields, files) => {
                         if(err) {
-                            respond400(err)
+                            respond400(res, err)
                             return
                         }
-                        res.writeHead(200, {'conten-type': 'text/plain'})
-                        res.write('received upload: \n\n')
-                        res.end(util.inspect({fields: fields, files: files}))
+                        let result = {
+                            publicKey: '',
+                            privateKey: ''
+                        }
+                        res.writeHead(200, {'Content-Type': 'application/json'})
+                        // res.write(result)
+                        // res.end(util.inspect({fields: fields, files: files}))
+                        res.end(JSON.stringify(result))
                     })
                 }
-                console.log('files: ', )
                 filesLib.create('text', async () => await callback(req, res))
                 break
             case 'GET':

@@ -16,9 +16,14 @@ const requestListener = function (req, res) {
         res.end('Error: URL not found.');
     }
 
-    function respond400(message) {
-        res.writeHead(400)
-        res.end(message)
+    function respond400(respond) {
+        if(typeof message === 'string') {                           // respond message
+            res.writeHead(400)
+            res.end(respond)
+        } else {                                                    // respond json
+            res.writeHead(400, {'Content-Type': 'application/json'})
+            res.end(JSON.stringify(respond))
+        }
     }
 
     // work around to get /:publickey and /:privatekey since I don't know how to get them natively.
@@ -69,7 +74,7 @@ const requestListener = function (req, res) {
                             res.end(file, 'binary');
                         }
                     }
-                    filesLib.download(publicKey, async (err, img) => await callback(err, img))
+                    filesLib.download(publicKey, async (err, file) => await callback(err, file))
                 } else {
                     res.writeHead(200);
                     res.end('GET');
@@ -77,10 +82,20 @@ const requestListener = function (req, res) {
                 break
             case 'DELETE':
                 if(paths[2]) {
-                    let privatekey = paths[2]
-
-                    res.writeHead(200);
-                    res.end(privatekey);
+                    let privateKey = paths[2]
+                    let callback = (err) => {
+                        console.log('calledback in delete')
+                        if(err) {
+                            respond400({message: err})
+                        } else {
+                            let result = {
+                                message: "File successfully deleted."
+                            }
+                            res.writeHead(200, { 'Content-Type': 'application/json'});
+                            res.end(JSON.stringify(result));
+                        }
+                    }
+                    filesLib.remove(privateKey, async (err) => await callback(err))
                 } else {
                     res.writeHead(200);
                     res.end();

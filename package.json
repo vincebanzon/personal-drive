@@ -21,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/vincebanzon/personal-drive/issues"
   },
-  "homepage": "https://github.com/vincebanzon/personal-drive#readme"
+  "homepage": "https://github.com/vincebanzon/personal-drive#readme",
+  "devDependencies": {
+    "chai": "^4.3.5",
+    "mocha": "^9.2.0"
+  }
 }

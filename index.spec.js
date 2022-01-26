@@ -57,3 +57,44 @@ describe('Test endpoint', () => {
         })
     })
 })
+
+
+describe('Test non-existing endpoint', () => {
+    it('should not POST /', done => {
+        chai.request(BASE_URL)
+        .post('/')
+        .end((err, res) => {
+            expect(res).to.have.status(404)
+            done()
+        })
+    })
+    it('should not GET /file', done => {
+        chai.request(BASE_URL)
+        .get('/file')
+        .end((err, res) => {
+            expect(res).to.have.status(404)
+            done()
+        })
+    })
+})
+
+describe('Test publickey and privatekey URL params', () => {
+    let publickey = "1"
+    let privatekey = "2"
+    it('should return publickey', done => {
+        chai.request(BASE_URL)
+        .get(`/files/${publickey}`)
+        .end((err, res) => {
+            expect(res.text).to.equal(publickey)
+            done()
+        })
+    })
+    it('should return privatekey', done => {
+        chai.request(BASE_URL)
+        .delete(`/files/${privatekey}`)
+        .end((err, res) => {
+            expect(res.text).to.equal(privatekey)
+            done()
+        })
+    })
+})

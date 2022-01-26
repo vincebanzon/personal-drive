@@ -1,8 +1,19 @@
 const process = require('process');
+const http = require('http');
+
+const PORT = process.env.PORT ? process.env.PORT : 8081 
+
+const requestListener = function (req, res) {
+  res.writeHead(200);
+  res.end('Hello, World!');
+}
+
+const server = http.createServer(requestListener);
+server.listen(PORT, () => {
+    console.log(`Server running at port ${PORT}`)
+});
 
 
-console.log('hello world', process.env.PORT)
-console.log('hello world', process.env.FOLDER)
 
 /**
  * TDD

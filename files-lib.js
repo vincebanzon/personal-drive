@@ -1,9 +1,6 @@
 function create(message, done) {
     console.log("creating new file", message)
-    setTimeout(() => {
-        done();
-
-    }, 1000)
+    done();
 }
 
 module.exports = { create }

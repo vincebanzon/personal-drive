@@ -4,8 +4,32 @@ const http = require('http');
 const PORT = process.env.PORT ? process.env.PORT : 8081 
 
 const requestListener = function (req, res) {
-  res.writeHead(200);
-  res.end('Hello, World!');
+    if(req.url === '/') {
+        res.writeHead(200);
+        res.end('Hello, World!');
+    } else if(req.url === '/files') {
+        switch(req.method) {
+            case 'POST':
+                res.writeHead(200);
+                res.end('POST');
+                break
+            case 'GET':
+                res.writeHead(200);
+                res.end('GET');
+                break
+            case 'DELETE':
+                res.writeHead(200);
+                res.end('DELETE');
+                break
+            default:
+                res.writeHead(404);
+                res.end('Error: URL not found.');
+                break
+        }
+    } else {
+        res.writeHead(404);
+        res.end('Error: URL not found.');
+    }
 }
 
 const server = http.createServer(requestListener);

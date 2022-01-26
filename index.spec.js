@@ -21,9 +21,36 @@ describe('Sample', () => {
 })
 
 describe('Test server', () => {
-    it('should get /', (done) => {
+    it('should GET /', done => {
         chai.request(BASE_URL)
         .get('/')
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            done()
+        })
+    })
+})
+
+describe('Test endpoint', () => {
+    it('should POST /files', done => {
+        chai.request(BASE_URL)
+        .post('/files')
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            done()
+        })
+    })
+    it('should GET /files', done => {
+        chai.request(BASE_URL)
+        .get('/files')
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            done()
+        })
+    })
+    it('should DELETE /files', done => {
+        chai.request(BASE_URL)
+        .delete('/files')
         .end((err, res) => {
             expect(res).to.have.status(200)
             done()

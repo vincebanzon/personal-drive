@@ -79,12 +79,22 @@ describe('Test non-existing endpoint', () => {
 })
 
 describe('Test publickey and privatekey URL params', () => {
+    let file = "multipart/form-data"
     let publickey = "1"
     let privatekey = "2"
+    it('should return publikey and privatekey', done => {
+        chai.request(BASE_URL)
+        .get(`/files`)
+        .end((err, res) => {
+            // should return JSON with {publicKey: '', privateKey: ''}
+            done()
+        })
+    })
     it('should return publickey', done => {
         chai.request(BASE_URL)
         .get(`/files/${publickey}`)
         .end((err, res) => {
+            // should return stream file with a MIME type
             expect(res.text).to.equal(publickey)
             done()
         })
@@ -93,6 +103,7 @@ describe('Test publickey and privatekey URL params', () => {
         chai.request(BASE_URL)
         .delete(`/files/${privatekey}`)
         .end((err, res) => {
+            // should return JSON confirmin file removal
             expect(res.text).to.equal(privatekey)
             done()
         })

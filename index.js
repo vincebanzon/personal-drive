@@ -4,6 +4,8 @@ const url = require('url');
 
 const PORT = process.env.PORT ? process.env.PORT : 8081 
 
+const filesLib = require('./files-lib');
+
 const requestListener = function (req, res) {
 
     function respond404(res) {
@@ -11,7 +13,8 @@ const requestListener = function (req, res) {
         res.end('Error: URL not found.');
     }
 
-    // work around to get /:publickey and /:privatekey since I don't know how to get them natively
+    // work around to get /:publickey and /:privatekey since I don't know how to get them natively.
+    // and new URL("") needs a specific localhost which might cause error when base_url is different from my environment
     let paths = req.url.split('/')
 
     if(paths[1] === "") {
@@ -27,8 +30,14 @@ const requestListener = function (req, res) {
     } else if(paths[1] === 'files') {
         switch(req.method) {
             case 'POST':
-                res.writeHead(200);
-                res.end('POST');
+                // can be improved by using Promise.
+                // might error after timeout (2000ms)
+                let callback = (req, res) => {
+                    console.log("took 1 sec")
+                    res.writeHead(200);
+                    res.end('POST');
+                }
+                filesLib.create('text', async () => await callback(req, res))
                 break
             case 'GET':
                 if(paths[2]) {                      // check if publickey is present

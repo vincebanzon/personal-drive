@@ -45,60 +45,45 @@ const requestListener = function (req, res) {
             case 'POST':
                 // can be improved by using Promise.
                 // might error after timeout (2000ms)
-                let callback = () => {
-                    var form = new formidable.IncomingForm()
-                    form.parse(req, (err, fields, files) => {
-                        if(err) {
-                            respond400(err)
-                            return
-                        }
-                        let result = {
-                            publicKey: '',
-                            privateKey: ''
-                        }
+                try {
+                    filesLib.create(req, (result) => {
                         res.writeHead(200, {'Content-Type': 'application/json'})
                         res.end(JSON.stringify(result))
                     })
+                } catch(err) {
+                    respond400(err)
                 }
-                filesLib.create('text', async () => await callback())
                 break
             case 'GET':
-                if(paths[2]) {                      // check if publickey is present
+                if(paths[2]) {                      // check if publickey param is present
                     let publicKey = paths[2]
-                    let callback = (err, file) => {
-                        if(err) {
-                            respond400(err)
-                        } else {
-                            console.log('respond download')
-                            res.writeHead(200);
-                            res.end(file, 'binary');
-                        }
+                    try {
+                        filesLib.download(publicKey, (mimeType, file) => {
+                            res.setHeader("Content-Type", mimeType)
+                            res.writeHead(200)
+                            res.end(file, 'binary')
+                        })
+                    } catch (err) {
+                        respond400(err)
                     }
-                    filesLib.download(publicKey, async (err, file) => await callback(err, file))
                 } else {
-                    res.writeHead(200);
-                    res.end('GET');
+                    respond400("Error: Invalid publicKey")
                 }
                 break
             case 'DELETE':
                 if(paths[2]) {
                     let privateKey = paths[2]
-                    let callback = (err) => {
-                        console.log('calledback in delete')
-                        if(err) {
-                            respond400({message: err})
-                        } else {
-                            let result = {
-                                message: "File successfully deleted."
-                            }
+                    try {
+                        filesLib.remove(privateKey, () => {
                             res.writeHead(200, { 'Content-Type': 'application/json'});
-                            res.end(JSON.stringify(result));
-                        }
+                            res.end(JSON.stringify({message: 'File successfully deleted.'}));
+                        })
+                    } catch (err) {
+                        respond400(err)
                     }
-                    filesLib.remove(privateKey, async (err) => await callback(err))
                 } else {
-                    res.writeHead(200);
-                    res.end();
+                    respond400({message: "Invalid privateKey"})
+
                 }
                 break
             default:

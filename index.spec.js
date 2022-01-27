@@ -34,9 +34,13 @@ describe('Test server', () => {
 })
 
 describe('Test endpoint', () => {
+    let fileName = 'sample-image.jpg'
+    let publicKey = fileName
+    let privateKey = fileName
     it('should POST /files', done => {
         chai.request(BASE_URL)
         .post('/files')
+        .attach('fileName', fs.readFileSync('sample-image.jpg'), 'sample-image.jpg')
         .end((err, res) => {
             expect(res).to.have.status(200)
             done()
@@ -44,7 +48,7 @@ describe('Test endpoint', () => {
     })
     it('should GET /files', done => {
         chai.request(BASE_URL)
-        .get('/files')
+        .get(`/files/${publicKey}`)
         .end((err, res) => {
             expect(res).to.have.status(200)
             done()
@@ -52,7 +56,7 @@ describe('Test endpoint', () => {
     })
     it('should DELETE /files', done => {
         chai.request(BASE_URL)
-        .delete('/files')
+        .delete(`/files/${privateKey}`)
         .end((err, res) => {
             expect(res).to.have.status(200)
             done()
@@ -81,15 +85,15 @@ describe('Test non-existing endpoint', () => {
 })
 
 describe('Test publickey and privatekey URL params', () => {
-    let file = fs.readFileSync('./sample-image.jpg')
     let fileName = 'sample-image.jpg'
-    let publickey = "1"
-    let privatekey = "2"
+    let publicKey = fileName
+    let privateKey = fileName
+    let file = fs.readFileSync(fileName)
 
     it('should return publikey and privatekey', done => {
         chai.request(BASE_URL)
         .post(`/files`)
-        .attach('image', file, fileName)
+        .attach('fileName', file, fileName)
         .set('Content-Type', 'image/jpeg')
         .end((err, res) => {
             expect(err).to.equal(null)
@@ -97,29 +101,22 @@ describe('Test publickey and privatekey URL params', () => {
             expect(res).to.be.json
             expect(res.publicKey).to.not.equal(null)
             expect(res.privateKey).to.not.equal(null)
+            // expect(res.body.publicKey).to.equal(publicKey)
+            // expect(res.body.privateKey).to.equal(privateKey)
             done()
         })
     })
-    it('should return publickey', done => {
+    it('should return response stream with MIME type', done => {
         chai.request(BASE_URL)
-        .get(`/files/${publickey}`)
+        .get(`/files/${publicKey}`)
         .end((err, res) => {
+            expect(res).to.have.status(200)
             expect(res.text).to.not.equal(null)
+            expect(res.type).to.not.equal(null)
+
             done()
         })
     })
-    // it('should return privatekey', done => {
-    //     chai.request(BASE_URL)
-    //     .delete(`/files/${privatekey}`)
-    //     .end((err, res) => {
-    //         // TODO: should pre-save file, before saving it to FOLDER
-    //         expect(err).to.equal(null)
-    //         expect(res).to.have.status(200)
-    //         expect(res).to.be.json
-    //         expect(res.message).to.not.equal(null)
-    //         done()
-    //     })
-    // })
 })
 
 describe('Test invalid file',() => {

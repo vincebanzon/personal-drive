@@ -1,12 +1,9 @@
-const process = require('process')
 const fs = require('fs')
-const path = require('path')
 const formidable = require('formidable')
-const util = require('util')
-const copyFile = util.promisify(fs.copyFile)
 const mime = require('mime')
+const { ENV_CONFIG } = require('./config')
 
-const BASE_FOLDER = process.env.FOLDER
+const BASE_FOLDER = ENV_CONFIG.FOLDER
 
 function create(req, done) {
     var form = new formidable.IncomingForm()

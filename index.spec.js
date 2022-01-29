@@ -1,14 +1,14 @@
-const process = require('process')
+
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const expect = chai.expect
 const should = chai.should
 const fs = require('fs')
+const { ENV_CONFIG } = require('./config')
 
 chai.use(chaiHttp)
 
-const PORT = process.env.PORT
-const BASE_URL = `http://localhost:${PORT}`
+const BASE_URL = `http://localhost:${ENV_CONFIG.PORT}`
 
 
 describe('Sample', () => {

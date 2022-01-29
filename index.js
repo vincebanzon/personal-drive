@@ -1,9 +1,8 @@
-const process = require('process')
 const http = require('http')
+const { ENV_CONFIG } = require('./config')
 
 var filesLib = require('./files-lib');
 
-const PORT = process.env.PORT ? process.env.PORT : 8081 
 
 
 const requestListener = function (req, res) {
@@ -92,4 +91,7 @@ const requestListener = function (req, res) {
 }
 
 const server = http.createServer(requestListener);
-server.listen(PORT, () => { console.log(`Server running at http://localhost:${PORT}`) });
+
+server.listen(ENV_CONFIG.PORT, () => {
+    console.log(`Server running at http://localhost:${server.address().port}`)
+});

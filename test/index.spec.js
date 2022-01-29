@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http')
 const expect = chai.expect
 const should = chai.should
 const fs = require('fs')
-const { ENV_CONFIG } = require('./config')
+const { ENV_CONFIG } = require('./../config')
 
 chai.use(chaiHttp)
 
@@ -40,7 +40,7 @@ describe('Test endpoint', () => {
     it('should POST /files', done => {
         chai.request(BASE_URL)
         .post('/files')
-        .attach('fileName', fs.readFileSync('sample-image.jpg'), 'sample-image.jpg')
+        .attach('fileName', fs.readFileSync('test/sample-image.jpg'), 'sample-image.jpg')
         .end((err, res) => {
             expect(res).to.have.status(200)
             done()
@@ -88,7 +88,7 @@ describe('Test publickey and privatekey URL params', () => {
     let fileName = 'sample-image.jpg'
     let publicKey = fileName
     let privateKey = fileName
-    let file = fs.readFileSync(fileName)
+    let file = fs.readFileSync('test/'+fileName)
 
     it('should return publikey and privatekey', done => {
         chai.request(BASE_URL)

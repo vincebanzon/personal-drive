@@ -1,7 +1,7 @@
 const fs = require('fs')
 const formidable = require('formidable')
 const mime = require('mime')
-const { ENV_CONFIG } = require('./config')
+const { ENV_CONFIG } = require('./../config')
 
 const BASE_FOLDER = ENV_CONFIG.FOLDER
 
@@ -23,7 +23,6 @@ function create(req, done) {
             })
         })
     })
-
 }
 
 function download(publicKey, done) {

@@ -1,8 +1,8 @@
 const http = require('http')
 const { ENV_CONFIG } = require('./config')
+const fileStorage = require('./file_storage')
 
-var filesLib = require('./files-lib');
-
+const PROVIDER = ENV_CONFIG.PROVIDER
 
 
 const requestListener = function (req, res) {
@@ -42,7 +42,7 @@ const requestListener = function (req, res) {
                 // can be improved by using Promise.
                 // might error after timeout (2000ms)
                 try {
-                    filesLib.create(req, (result) => {
+                    fileStorage[PROVIDER].create(req, (result) => {
                         res.writeHead(200, {'Content-Type': 'application/json'})
                         res.end(JSON.stringify(result))
                     })
@@ -54,7 +54,7 @@ const requestListener = function (req, res) {
                 if(paths[2]) {                                                          // check if publicKey param is present
                     let publicKey = paths[2]
                     try {
-                        filesLib.download(publicKey, (mimeType, file) => {
+                        fileStorage[PROVIDER].download(publicKey, (mimeType, file) => {
                             res.setHeader("Content-Type", mimeType)
                             res.writeHead(200)
                             res.end(file, 'binary')
@@ -70,7 +70,7 @@ const requestListener = function (req, res) {
                 if(paths[2]) {
                     let privateKey = paths[2]
                     try {
-                        filesLib.remove(privateKey, () => {
+                        fileStorage[PROVIDER].remove(privateKey, () => {
                             res.writeHead(200, { 'Content-Type': 'application/json'});
                             res.end(JSON.stringify({message: 'File successfully deleted.'}));
                         })

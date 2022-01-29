@@ -3,6 +3,7 @@
 
     export PORT="8080"
     export FOLDER="/home/computer/Desktop/storage/"
+    export PROVIDER="local"
     export CONFIG="/home/computer/Desktop/personal-drive/config/provider.config.js"
  */
 
@@ -61,8 +62,4 @@ const PROVIDER_CONFIG = process.env.CONFIG
 /** Validate PROVIDER_CONFIG END */
 
 
-module.exports = {
-    PORT,
-    FOLDER,
-    PROVIDER
-}
+module.exports = { PORT, FOLDER, PROVIDER }

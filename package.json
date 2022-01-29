@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha *.spec.js",
+    "test": "mocha test/*.spec.js",
     "test_instruction": "// need to run ```$ npm run start``` in another terminal"
   },
   "repository": {

@@ -1,8 +1,5 @@
 const process = require('process')
 const http = require('http')
-const url = require('url')
-const formidable = require('formidable')
-const util = require('util')
 
 var filesLib = require('./files-lib');
 
@@ -42,7 +39,7 @@ const requestListener = function (req, res) {
         }
     } else if(paths[1] === 'files') {
         switch(req.method) {
-            case 'POST':
+            case 'POST':                                                                 // route: Post /files
                 // can be improved by using Promise.
                 // might error after timeout (2000ms)
                 try {
@@ -54,8 +51,8 @@ const requestListener = function (req, res) {
                     respond400(err)
                 }
                 break
-            case 'GET':
-                if(paths[2]) {                      // check if publickey param is present
+            case 'GET':                                                                 // route: Get /files/:publicKey
+                if(paths[2]) {                                                          // check if publicKey param is present
                     let publicKey = paths[2]
                     try {
                         filesLib.download(publicKey, (mimeType, file) => {
@@ -70,7 +67,7 @@ const requestListener = function (req, res) {
                     respond400("Error: Invalid publicKey")
                 }
                 break
-            case 'DELETE':
+            case 'DELETE':                                                              // route: Delete /files/:privateKey
                 if(paths[2]) {
                     let privateKey = paths[2]
                     try {
@@ -83,7 +80,6 @@ const requestListener = function (req, res) {
                     }
                 } else {
                     respond400({message: "Invalid privateKey"})
-
                 }
                 break
             default:
@@ -96,37 +92,4 @@ const requestListener = function (req, res) {
 }
 
 const server = http.createServer(requestListener);
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`)
-});
-
-
-
-/**
- * TDD
- * Install mocha and chai
- *
- * Update script:
- *  npm start
- *  npm test
- *
- * Setup EnvVar:
- *  PORT
- *  FOLDER
- *
- *
- * Create a server
- *  Create sample get endpoint
- *  Test endpoint
- *
- * Create test for endpoints
- * Create endpoints
- *  POST /files
- *  GET  /files/:publicKey
- *  Delete /files/privateKey
- *
- * Read parameters
- *
- *
- *
- */
+server.listen(PORT, () => { console.log(`Server running at http://localhost:${PORT}`) });

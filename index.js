@@ -2,6 +2,9 @@ const http = require('http')
 const { ENV_CONFIG } = require('./config')
 const fileStorage = require('./file_storage')
 
+const myCron = require('./cron')
+myCron()
+
 const PROVIDER = ENV_CONFIG.PROVIDER
 
 
